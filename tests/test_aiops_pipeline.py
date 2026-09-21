@@ -1,5 +1,5 @@
 from pathlib import Path
-
+import runpy
 from src.anomaly_detector import AnomalyDetector
 from src.aiops_pipeline import run_pipeline
 from src.event_consumer import EventConsumer
@@ -70,3 +70,33 @@ def test_consumer_receives_event():
     messages = consumer.consume()
 
     assert len(messages) == 1
+
+def test_pipeline_end_to_end():
+    data_file = Path(__file__).resolve().parent.parent / "data" / "service_data.json"
+    result = run_pipeline(str(data_file))
+
+    assert result["records_processed"] > 0
+    assert len(result["anomalies_detected"]) > 0
+    assert result["events_consumed"] == result["anomalies_detected"]
+
+
+def test_producer_ignores_empty_event():
+    producer = EventProducer(EventTopic("anomaly-events"))
+    assert producer.publish(None) is False
+
+
+def test_topic_clear_empties_messages():
+    topic = EventTopic("anomaly-events")
+    topic.publish({"type": "ANOMALY"})
+    topic.clear()
+    assert topic.get_messages() == []
+def test_pipeline_script_runs_as_main(monkeypatch, capsys):
+    root = Path(__file__).resolve().parent.parent
+    monkeypatch.chdir(root)
+    monkeypatch.syspath_prepend(str(root / "src"))
+
+    runpy.run_path(str(root / "src" / "aiops_pipeline.py"), run_name="__main__")
+
+    output = capsys.readouterr().out
+    assert "AIOps Pipeline Result" in output
+    assert "Events consumed: 2" in output
