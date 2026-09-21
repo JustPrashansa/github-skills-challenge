@@ -161,7 +161,7 @@ All 10 records were processed, 2 anomalies were found, and both events went thro
 ## 9. Test results
 
 `python -m pytest --cov=src --verbose`
-
+```text
 ============================= test session starts ==============================
 platform linux -- Python 3.13.15, pytest-8.4.1, pluggy-1.6.0 -- /workspaces/github-skills-challenge/.venv/calculations/bin/python
 cachedir: .pytest_cache
@@ -199,7 +199,7 @@ src/event_topic.py           10      0   100%
 -------------------------------------------------------
 TOTAL                        95      0   100%
 ============================== 15 passed in 0.19s ==============================
-
+```
 
 ## 10. How to reproduce
 
