@@ -211,8 +211,8 @@ source .venv/calculations/bin/activate
 pip install -r requirements.txt
 pip install pytest coverage pytest-cov
 
-python src/aiops_pipeline.py            # run the pipeline
-python -m pytest --cov=src --verbose    # run the tests
+python src/aiops_pipeline.py          
+python -m pytest --cov=src --verbose   
 ```
 
 Expected: 10 records processed, 2 anomalies, 2 events consumed, all tests passing.
